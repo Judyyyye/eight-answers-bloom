@@ -28,3 +28,8 @@ use the editor.
   own key and store it in Secrets.
 - **Secrets.** Lovable manages them. Do not put secret values in the repo.
 <!-- LOVABLE:END -->
+
+## Project rules
+
+- Each fun quiz is a data file in `src/quizzes/` registered in `src/quizzes/index.ts`; shared UI in `src/components/quiz/` renders any quiz at `/quiz/$quizId`, so new quizzes need no new pages.
+- Answering rules (one question at a time, prev/next, must pick before next) live in the pure reducer `src/lib/quiz-session.ts` with tests beside it; keep UI components free of flow logic.
