@@ -1,98 +1,378 @@
 import type { Quiz } from "./types";
 
+/**
+ * 「你是什么花？」— content copied verbatim from the user's script
+ * 《你是什么花？趣味人格测试完整脚本》. Option letters map to flowers:
+ * A=牡丹 B=茉莉 C=绣球 D=向日葵 E=百合 F=波斯菊; each pick gives that flower 1 point.
+ */
 export const flowerQuiz: Quiz = {
   id: "flower",
   title: "你是什么花？",
   tagline: "每个人都有自己的盛开方式",
   description: "8道题，找到与你气质最接近的那一朵花",
-  duration: "约 2 分钟",
+  duration: "约 2—3 分钟",
+  resultIntro: "你的专属花朵是——",
   results: [
-    { id: "sakura", name: "樱花" },
-    { id: "sunflower", name: "向日葵" },
-    { id: "lavender", name: "薰衣草" },
-    { id: "rose", name: "玫瑰" },
-    { id: "lily", name: "铃兰" },
-    { id: "daisy", name: "雏菊" },
+    {
+      id: "peony",
+      name: "牡丹",
+      persona: "热烈的自我",
+      slogan: "你不必为了被喜欢，而收敛自己的光芒。",
+      keywords: ["自信表达", "重视自我", "主动争取"],
+      description:
+        "你身上有一种明亮而坚定的力量。你知道自己喜欢什么，也愿意为想要的生活主动争取。比起一味迎合别人的期待，你更希望活出自己的样子：可以热烈，可以闪耀，也可以坦然表达自己的野心与喜悦。你并不需要时时成为人群的焦点，但你希望自己的选择被认真对待。对你来说，人生不是等待别人安排的一场花期，而是亲手为自己创造盛放的机会。",
+      advice:
+        "你的优势是有主见、有行动意愿，也愿意为自己争取机会。你能提醒自己：不必把每一次表现都变成证明，不必因为暂时没有掌声就怀疑自己的价值。真正的自信，也包括允许自己普通、疲惫和偶尔退后。",
+      blessing: "愿你一直有盛开的勇气，也有不必盛开的自由。",
+    },
+    {
+      id: "jasmine",
+      name: "茉莉",
+      persona: "温柔的力量",
+      slogan: "温柔不是没有锋芒，而是你选择了怎样对待世界。",
+      keywords: ["细腻共情", "真诚关系", "温和坚定"],
+      description:
+        "你拥有细腻的感受力，常常能注意到别人没有说出口的情绪。你珍惜真诚的关系，也愿意用耐心和善意回应身边的人。你可能不是最张扬的那一朵花，却能在细微之处留下温柔的气息。你看重陪伴，也希望自己的付出能够被理解。你的温柔并不意味着没有原则；当你真正认定一件事，也有安静而坚定的力量。",
+      advice:
+        "你的优势是善于倾听、体察感受，也懂得珍惜关系。需要留意的是，不必总是优先照顾所有人的情绪。你可以拒绝，可以表达不舒服，也可以坦然提出自己的需要。让温柔同时流向自己。",
+      blessing: "愿你照亮别人的同时，也记得为自己留一盏灯。",
+    },
+    {
+      id: "hydrangea",
+      name: "绣球",
+      persona: "丰富的内心",
+      slogan: "你的世界不止一种颜色，也不必向所有人解释。",
+      keywords: ["想象丰富", "感受细腻", "善于观察"],
+      description:
+        "你的内心像一簇层层叠叠的绣球，藏着许多细腻的感受和奇妙的想法。你容易被一个画面、一句话或一个微小的瞬间触动，也喜欢在独处时慢慢整理思绪。你可能拥有丰富的想象力，对事物有自己的观察角度，不愿意把生活过成单一的标准答案。你需要属于自己的空间，也希望遇到能够理解你复杂与多面的人。",
+      advice:
+        "你的优势是感知敏锐、富有创造力，能够发现日常中不易察觉的细节。有时，你也可能因为想得太多而迟迟不行动。试着先完成一个小小的开始，不必等到所有想法都变得清晰，灵感也可以在行动中生长。",
+      blessing: "愿你珍惜自己的丰富，也勇敢让内心的颜色被看见。",
+    },
+    {
+      id: "sunflower",
+      name: "向日葵",
+      persona: "明亮的生命力",
+      slogan: "你总愿意再试一次，因为世界还有很多值得期待的事。",
+      keywords: ["热情积极", "行动力强", "乐于探索"],
+      description:
+        "你身上有一种向前的力量。遇到新鲜事物时，你愿意尝试；面对问题时，你更倾向于先行动，再在过程中寻找答案。你喜欢有活力的生活，也乐于和别人分享快乐。你不一定时时都乐观，但你愿意为生活打开新的可能。对你来说，成长不是永远不跌倒，而是在休息之后，依然愿意重新出发。",
+      advice:
+        "你的优势是敢于开始、适应变化，也能给周围带来活力。需要留意的是，不必把自己变成永远充满能量的人。疲惫时可以停下来，难过时也不必急着振作。照顾好自己，才能走得更远。",
+      blessing: "愿你一直拥有向阳的勇气，也拥有安心休息的底气。",
+    },
+    {
+      id: "lily",
+      name: "百合",
+      persona: "清醒的灵魂",
+      slogan: "你有自己的节奏，不需要把人生交给别人的标准。",
+      keywords: ["独立自主", "理性判断", "边界清晰"],
+      description:
+        "你重视独立，也珍惜清晰而稳定的生活秩序。面对选择时，你通常会先观察、分析，再决定是否投入。你不喜欢被过度干涉，也尊重别人拥有自己的空间。比起热闹的表面，你更在意事情是否真正符合自己的原则。你身上有一种安静的清醒：知道什么值得坚持，也愿意为自己的选择负责。",
+      advice:
+        "你的优势是有判断力、重视原则，也能在复杂情境中保持相对清晰。偶尔也可以不必事事都靠自己解决。向信任的人求助并不意味着失去独立，表达情绪也不会削弱你的坚定。",
+      blessing: "愿你保持清醒，也允许生活偶尔不按计划发生。",
+    },
+    {
+      id: "cosmos",
+      name: "波斯菊",
+      persona: "自由的灵魂",
+      slogan: "人生不是单选题，你可以拥有不止一种可能。",
+      keywords: ["好奇开放", "灵活适应", "热爱自由"],
+      description:
+        "你对世界保持好奇，不太愿意被一种固定身份或生活模板定义。你喜欢探索不同的方向，也愿意在变化中寻找新的体验。比起过早确定唯一答案，你更想亲自走一走、看一看，再决定下一步去哪里。你身上有轻盈而开放的气质，能够接受生活的不确定，也相信不同的经历都能成为自己的组成部分。",
+      advice:
+        "你的优势是愿意尝试、接受变化，也不容易被单一标准限制。有时，选择太多可能让你难以持续投入。可以试着为真正重要的目标留出稳定的时间，让自由不只是不断出发，也包括主动选择留下。",
+      blessing: "愿你自在生长，在自己的季节里开出喜欢的模样。",
+    },
   ],
   questions: [
     {
       id: "q1",
-      text: "周末早晨醒来，你最想做的事是？",
+      text: "当你拥有一个完全自由的周末，你最可能怎样安排？",
       options: [
-        { id: "a", text: "拉开窗帘晒晒太阳，出门走走", scores: { sunflower: 2, daisy: 1 } },
-        { id: "b", text: "赖在被窝里，读一本喜欢的书", scores: { lavender: 2, lily: 1 } },
-        { id: "c", text: "约好朋友去吃一顿精致早午餐", scores: { rose: 2, sakura: 1 } },
-        { id: "d", text: "慢慢收拾房间，给植物浇浇水", scores: { lily: 2, daisy: 1 } },
+        {
+          id: "a",
+          text: "打扮得漂漂亮亮，去喜欢的地方享受生活。",
+          resultId: "peony",
+        },
+        {
+          id: "b",
+          text: "在家泡杯茶、听音乐，舒服地待在自己的节奏里。",
+          resultId: "jasmine",
+        },
+        {
+          id: "c",
+          text: "看书、画画或写点东西，沉浸在自己的世界。",
+          resultId: "hydrangea",
+        },
+        {
+          id: "d",
+          text: "约朋友出门，去体验一件新鲜有趣的事。",
+          resultId: "sunflower",
+        },
+        {
+          id: "e",
+          text: "按自己的计划处理事情，让生活重新变得井井有条。",
+          resultId: "lily",
+        },
+        {
+          id: "f",
+          text: "不做太多计划，出门走走，看看会遇见什么。",
+          resultId: "cosmos",
+        },
       ],
     },
     {
       id: "q2",
-      text: "朋友眼中的你，更像是？",
+      text: "当别人误解了你的意思，你通常会怎么做？",
       options: [
-        { id: "a", text: "温柔体贴的倾听者", scores: { sakura: 2, lily: 1 } },
-        { id: "b", text: "走到哪儿都带来笑声的开心果", scores: { sunflower: 2, daisy: 1 } },
-        { id: "c", text: "有主见、特别靠谱的那个人", scores: { rose: 2 } },
-        { id: "d", text: "安静但很有想法的观察者", scores: { lavender: 2, lily: 1 } },
+        {
+          id: "a",
+          text: "直接说清楚自己的想法，不想被轻易定义。",
+          resultId: "peony",
+        },
+        {
+          id: "b",
+          text: "先考虑对方的感受，再找合适的方式解释。",
+          resultId: "jasmine",
+        },
+        {
+          id: "c",
+          text: "表面没说什么，心里却会反复琢磨这件事。",
+          resultId: "hydrangea",
+        },
+        {
+          id: "d",
+          text: "马上解释清楚，不想让误会影响接下来的相处。",
+          resultId: "sunflower",
+        },
+        {
+          id: "e",
+          text: "把事实讲明白；如果对方仍不理解，就不再纠缠。",
+          resultId: "lily",
+        },
+        {
+          id: "f",
+          text: "不太执着于让所有人理解，时间会慢慢说明。",
+          resultId: "cosmos",
+        },
       ],
     },
     {
       id: "q3",
-      text: "如果拥有一个小房间，你会把它布置成？",
+      text: "你最希望别人怎样形容你？",
       options: [
-        { id: "a", text: "洒满阳光和绿植的小花园", scores: { daisy: 2, sunflower: 1 } },
-        { id: "b", text: "堆满书本和香薰的安静角落", scores: { lavender: 2 } },
-        { id: "c", text: "有落地镜和漂亮衣柜的梳妆间", scores: { rose: 2, sakura: 1 } },
-        { id: "d", text: "挂着纱帘、放着唱片机的复古小屋", scores: { sakura: 2, lily: 1 } },
+        {
+          id: "a",
+          text: "有魅力、有主见，活得漂亮而坚定。",
+          resultId: "peony",
+        },
+        {
+          id: "b",
+          text: "温柔细腻，和你相处会觉得安心。",
+          resultId: "jasmine",
+        },
+        {
+          id: "c",
+          text: "有趣特别，脑子里总装着一个丰富的世界。",
+          resultId: "hydrangea",
+        },
+        {
+          id: "d",
+          text: "阳光积极，身上总有一股行动的劲儿。",
+          resultId: "sunflower",
+        },
+        {
+          id: "e",
+          text: "清醒独立，做事有分寸、有自己的原则。",
+          resultId: "lily",
+        },
+        {
+          id: "f",
+          text: "自由洒脱，对世界永远保持好奇。",
+          resultId: "cosmos",
+        },
       ],
     },
     {
       id: "q4",
-      text: "面对一件很想做、但有点难的事，你会？",
+      text: "进入一段新的关系时，什么最能让你感到舒服？",
       options: [
-        { id: "a", text: "先冲了再说，边做边想", scores: { sunflower: 2, rose: 1 } },
-        { id: "b", text: "默默做好计划，一步一步来", scores: { lily: 2, lavender: 1 } },
-        { id: "c", text: "给自己定个目标，一定要做到最好", scores: { rose: 2 } },
-        { id: "d", text: "找个志同道合的伙伴一起做", scores: { daisy: 2, sakura: 1 } },
+        {
+          id: "a",
+          text: "彼此欣赏、平等相处，也能坦然表达喜欢。",
+          resultId: "peony",
+        },
+        {
+          id: "b",
+          text: "能够理解彼此的情绪，愿意认真回应。",
+          resultId: "jasmine",
+        },
+        {
+          id: "c",
+          text: "可以深入聊天，分享不容易对别人说的想法。",
+          resultId: "hydrangea",
+        },
+        {
+          id: "d",
+          text: "一起体验新鲜事，创造很多快乐的回忆。",
+          resultId: "sunflower",
+        },
+        {
+          id: "e",
+          text: "尊重彼此的边界，不控制，也不过度干涉。",
+          resultId: "lily",
+        },
+        {
+          id: "f",
+          text: "关系亲近但不束缚，彼此都保有自己的生活。",
+          resultId: "cosmos",
+        },
       ],
     },
     {
       id: "q5",
-      text: "你最喜欢哪一种天气？",
+      text: "当生活进入一段不太顺利的时期，你更可能？",
       options: [
-        { id: "a", text: "万里无云的大晴天", scores: { sunflower: 2 } },
-        { id: "b", text: "微风轻拂的春日午后", scores: { sakura: 2, daisy: 1 } },
-        { id: "c", text: "淅淅沥沥的小雨天", scores: { lavender: 2, lily: 1 } },
-        { id: "d", text: "铺满晚霞的傍晚", scores: { rose: 2, sakura: 1 } },
+        {
+          id: "a",
+          text: "重新找回状态，让自己变得更有底气。",
+          resultId: "peony",
+        },
+        {
+          id: "b",
+          text: "给自己时间消化情绪，也希望有人温柔陪伴。",
+          resultId: "jasmine",
+        },
+        {
+          id: "c",
+          text: "通过阅读、创作或思考，慢慢理解自己的感受。",
+          resultId: "hydrangea",
+        },
+        {
+          id: "d",
+          text: "先做点什么改变现状，行动起来再调整。",
+          resultId: "sunflower",
+        },
+        {
+          id: "e",
+          text: "梳理问题、分析原因，再制定可执行的计划。",
+          resultId: "lily",
+        },
+        {
+          id: "f",
+          text: "换个环境或尝试新事物，让自己看到别的可能。",
+          resultId: "cosmos",
+        },
       ],
     },
     {
       id: "q6",
-      text: "收到一份礼物，你最希望它是？",
+      text: "下面哪一种生活画面最让你心动？",
       options: [
-        { id: "a", text: "一封手写的长长的信", scores: { lily: 2, sakura: 1 } },
-        { id: "b", text: "一场说走就走的旅行", scores: { daisy: 2, sunflower: 1 } },
-        { id: "c", text: "一件精心挑选的漂亮饰品", scores: { rose: 2 } },
-        { id: "d", text: "一盏让人安睡的香薰小夜灯", scores: { lavender: 2 } },
+        {
+          id: "a",
+          text: "在喜欢的城市生活，有喜欢的事业，也有闪闪发光的自己。",
+          resultId: "peony",
+        },
+        {
+          id: "b",
+          text: "身边有温暖的人，日子安稳、柔软、有烟火气。",
+          resultId: "jasmine",
+        },
+        {
+          id: "c",
+          text: "拥有一处自己的空间，可以自由创作、阅读和发呆。",
+          resultId: "hydrangea",
+        },
+        {
+          id: "d",
+          text: "生活充满新鲜体验，每天都有值得期待的事情。",
+          resultId: "sunflower",
+        },
+        {
+          id: "e",
+          text: "经济独立、安排清晰，能够稳稳掌控自己的生活。",
+          resultId: "lily",
+        },
+        {
+          id: "f",
+          text: "带着行李去不同的地方，体验多种人生可能。",
+          resultId: "cosmos",
+        },
       ],
     },
     {
       id: "q7",
-      text: "心情低落的时候，你通常会？",
+      text: "遇到一个很喜欢、但也有些挑战的机会时，你通常会？",
       options: [
-        { id: "a", text: "找朋友聊聊天，很快就好啦", scores: { sunflower: 2, daisy: 1 } },
-        { id: "b", text: "一个人听歌、写日记，慢慢消化", scores: { lavender: 2, lily: 1 } },
-        { id: "c", text: "好好打扮一下，出门犒劳自己", scores: { rose: 2 } },
-        { id: "d", text: "抱着玩偶看一部温暖的电影", scores: { sakura: 2, daisy: 1 } },
+        {
+          id: "a",
+          text: "相信自己的能力，主动争取，不想轻易错过。",
+          resultId: "peony",
+        },
+        {
+          id: "b",
+          text: "感受这件事是否符合内心，也会考虑身边人的感受。",
+          resultId: "jasmine",
+        },
+        {
+          id: "c",
+          text: "先想象各种可能性，弄清楚自己真正期待什么。",
+          resultId: "hydrangea",
+        },
+        {
+          id: "d",
+          text: "先行动起来，边尝试边调整。",
+          resultId: "sunflower",
+        },
+        {
+          id: "e",
+          text: "分析利弊、评估风险，准备充分后再决定。",
+          resultId: "lily",
+        },
+        {
+          id: "f",
+          text: "愿意先去体验，不急着把未来限定在一种答案里。",
+          resultId: "cosmos",
+        },
       ],
     },
     {
       id: "q8",
-      text: "你希望别人想起你时，第一印象是？",
+      text: "如果把你的人生比作一座花园，你希望它是什么样子？",
       options: [
-        { id: "a", text: "像阳光一样温暖", scores: { sunflower: 2 } },
-        { id: "b", text: "像春风一样温柔", scores: { sakura: 2 } },
-        { id: "c", text: "像星光一样闪耀", scores: { rose: 2 } },
-        { id: "d", text: "像清晨一样纯粹", scores: { lily: 2, daisy: 1 } },
+        {
+          id: "a",
+          text: "花开繁盛、色彩明亮，充满自信和生命力。",
+          resultId: "peony",
+        },
+        {
+          id: "b",
+          text: "有清香、有微风，安静温暖，让人感到被照顾。",
+          resultId: "jasmine",
+        },
+        {
+          id: "c",
+          text: "色彩丰富、层次很多，藏着许多不为人知的小角落。",
+          resultId: "hydrangea",
+        },
+        {
+          id: "d",
+          text: "阳光充足、生机勃勃，每天都有新的花在盛开。",
+          resultId: "sunflower",
+        },
+        {
+          id: "e",
+          text: "整洁优雅、布局清晰，每一处都有自己的秩序。",
+          resultId: "lily",
+        },
+        {
+          id: "f",
+          text: "自然生长、不被修剪成固定形状，随时有新的惊喜。",
+          resultId: "cosmos",
+        },
       ],
     },
   ],

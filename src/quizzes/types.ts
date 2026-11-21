@@ -3,8 +3,8 @@
 export interface QuizOption {
   id: string;
   text: string;
-  /** Points this option gives to each result id, used later to pick the result. */
-  scores: Record<string, number>;
+  /** The result this option gives 1 point to. */
+  resultId: string;
 }
 
 export interface QuizQuestion {
@@ -15,7 +15,17 @@ export interface QuizQuestion {
 
 export interface QuizResultType {
   id: string;
+  /** e.g. 牡丹 */
   name: string;
+  /** e.g. 热烈的自我 */
+  persona: string;
+  /** One-line signature sentence. */
+  slogan: string;
+  keywords: string[];
+  description: string;
+  /** Strengths and a gentle reminder. */
+  advice: string;
+  blessing: string;
 }
 
 export interface Quiz {
@@ -26,6 +36,9 @@ export interface Quiz {
   description: string;
   /** Rough time to finish, shown on the intro card. */
   duration: string;
+  /** Lead-in line on the result page. */
+  resultIntro: string;
   questions: QuizQuestion[];
+  /** Listed in option order; also the display order for scores and ties. */
   results: QuizResultType[];
 }

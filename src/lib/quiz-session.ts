@@ -6,19 +6,28 @@
 export interface QuizSessionState {
   total: number;
   current: number;
-  /** Selected option id per question, null when unanswered. */
+  /** Selected option id per question, null when unanswered. One answer per question. */
   answers: (string | null)[];
   finished: boolean;
+  /** Which tied result the user picked as 「更像现在的我」; does not change scores. */
+  tieChoice: string | null;
 }
 
 export type QuizSessionAction =
   | { type: "select"; optionId: string }
   | { type: "next" }
   | { type: "prev" }
+  | { type: "chooseTie"; resultId: string }
   | { type: "restart" };
 
 export function createSession(total: number): QuizSessionState {
-  return { total, current: 0, answers: Array.from({ length: total }, () => null), finished: false };
+  return {
+    total,
+    current: 0,
+    answers: Array.from({ length: total }, () => null),
+    finished: false,
+    tieChoice: null,
+  };
 }
 
 export function canGoNext(state: QuizSessionState): boolean {
@@ -46,14 +55,17 @@ export function quizSessionReducer(
     }
     case "next": {
       if (!canGoNext(state)) return state;
-      if (isLastQuestion(state)) return { ...state, finished: true };
+      if (isLastQuestion(state)) return { ...state, finished: true, tieChoice: null };
       return { ...state, current: state.current + 1 };
     }
     case "prev": {
-      if (state.finished) return { ...state, finished: false };
+      if (state.finished) return { ...state, finished: false, tieChoice: null };
       if (state.current === 0) return state;
       return { ...state, current: state.current - 1 };
     }
+    case "chooseTie":
+      if (!state.finished) return state;
+      return { ...state, tieChoice: action.resultId };
     case "restart":
       return createSession(state.total);
   }

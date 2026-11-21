@@ -1,5 +1,5 @@
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { useReducer } from "react";
+import { useEffect, useReducer } from "react";
 
 import { Blossom } from "@/components/decor/Blossom";
 import { BrandMark } from "@/components/decor/BrandMark";
@@ -11,17 +11,58 @@ import {
   isLastQuestion,
   quizSessionReducer,
 } from "@/lib/quiz-session";
+import { computeScores, topResultIds } from "@/lib/quiz-scoring";
 import type { Quiz } from "@/quizzes";
 
 import { QuestionCard } from "./QuestionCard";
-import { QuizComplete } from "./QuizComplete";
 import { QuizProgress } from "./QuizProgress";
+import { QuizResult } from "./QuizResult";
+import { QuizTieBreaker } from "./QuizTieBreaker";
 
 /** Runs any quiz: one question at a time with progress and previous / next buttons. */
 export function QuizRunner({ quiz }: { quiz: Quiz }) {
   const [state, dispatch] = useReducer(quizSessionReducer, quiz.questions.length, createSession);
   const question = quiz.questions[state.current];
+
+  // Bring each new question / the result back to the top on small screens.
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, [state.current, state.finished, state.tieChoice]);
+
   if (!question) return null;
+
+  const back = () => dispatch({ type: "prev" });
+  const restart = () => dispatch({ type: "restart" });
+
+  function renderFinished() {
+    const scores = computeScores(quiz, state.answers);
+    const leaders = topResultIds(quiz, scores)
+      .map((id) => quiz.results.find((r) => r.id === id))
+      .filter((r) => r !== undefined);
+    const chosen =
+      leaders.length === 1 ? leaders[0] : leaders.find((r) => r.id === state.tieChoice);
+    if (!chosen) {
+      return (
+        <QuizTieBreaker
+          tied={leaders}
+          score={scores[leaders[0]?.id ?? ""] ?? 0}
+          onChoose={(resultId) => dispatch({ type: "chooseTie", resultId })}
+          onBack={back}
+        />
+      );
+    }
+    return (
+      <QuizResult
+        key={chosen.id}
+        quiz={quiz}
+        result={chosen}
+        scores={scores}
+        tiedWith={leaders.filter((r) => r.id !== chosen.id)}
+        onRestart={restart}
+        onBack={back}
+      />
+    );
+  }
 
   return (
     <main className="mx-auto flex min-h-dvh w-full max-w-xl flex-col px-5 pb-6 pt-5">
@@ -39,10 +80,7 @@ export function QuizRunner({ quiz }: { quiz: Quiz }) {
 
       <div className="mt-5 flex-1">
         {state.finished ? (
-          <QuizComplete
-            onBack={() => dispatch({ type: "prev" })}
-            onRestart={() => dispatch({ type: "restart" })}
-          />
+          renderFinished()
         ) : (
           <QuestionCard
             key={question.id}
@@ -61,7 +99,7 @@ export function QuizRunner({ quiz }: { quiz: Quiz }) {
             size="pill"
             className="flex-1"
             disabled={!canGoPrev(state)}
-            onClick={() => dispatch({ type: "prev" })}
+            onClick={back}
           >
             <ChevronLeft />
             上一题
